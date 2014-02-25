@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Documentation</title>
+		<link href="styles.css" rel="stylesheet">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="prettify.js"></script>
+
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	</head>
+	<body>
+	<div class="redBorder"></div>
+	<div class="greenBorder"></div>
+	<div class="yellowBorder"></div>
+	<div id="wrapper">
+		<nav>	
+			<dl>
+			</dl>
+		</nav>
+		
+		<div id="contentWrapper" style="background-color: #F9F9F9;">
+			<h1 id="mainHeader">使用指南</h1>
+			<h2 id="introText">一些关于内部核心框架的使用指南</h2>
+			<article id="normal">
+				<h1>常规主题</h1>
+
+				<h2>URL规则</h2>
+				<p>基于模块和操作的方式进行访问,采用单一入口模式进行项目部署和路由访问,无论访问任何一个模块或者功能,只有一个统一的入口.</p>
+				<div class="notice info">
+					<h4>http://yourdomain.com/index.php?m=content&c=index&a=show&id=1</h4>
+				</div>	
+				<p>1.第一段,<kbd>m=content</kbd>表示应用模块名称,即应用文件夹名</p>
+				<p>2.第二段,<kbd>c=index</kbd>表示调用应用模块内的控制器(Action)类</p>
+				<p>3.第三段,<kbd>a=show</kbd>表示调用第二段控制器(Action)类中的函数或方法</p>
+				<p>4.第四或更多段,表示传递给控制器的参数,如id或其它各种变量</p>
+				<h3>定义默认URL路由</h3>
+				<hr>
+				<p>当忽略m,c,a的值时,默认m=index,c=index,a=index</p>
+				<div class="notice info">
+					<h4>http://yourdomain.com/index.php?id=1</h4>
+				</div>
+				<p>当不存在某个URI或者直接从根目录访问的时候,此时会加载默认控制器.</p>
+				<p>修改<kbd>core/library/class/system/App.class.php</kbd>文件设置默认路由:</p>
+				<pre data-type="php"><code>static private function dispatcher(){<br />
+		$app_name = trim($_GET['m']);<br />
+		$app_class = trim($_GET['c']);<br />
+		$app_method = trim($_GET['a']);<br />
+		//应用目录<br />
+		defined('APP_NAME')||define('APP_NAME', $app_name?$app_name:'index');<br />
+		//应用类<br />
+		defined('APP_CLASS')||define('APP_CLASS', parse_name($app_class?$app_class:'index',1));<br />
+		//应用方法<br />
+		defined('APP_METHOD')||define('APP_METHOD', $app_method?$app_method:'index');<br />
+	}</code></pre>				
+				<h3>index.php文件</h3>
+				<hr>
+				<p>默认情况下,index.php是默认的入口文件,你的URL可以隐藏它</p>
+				<p>http://yourdomain.com/?m=content&c=index&a=show&id=1</p>
+				<p>你也可以修改入口文件,通过修改配置文件<kbd><a href="">config/system.php</a></kbd></p>
+				<pre data-type="php"><code>'enter_name' => 'index.php'</code></pre>
+				<p>这时你需要使用这个配置项</p>
+				<pre data-type="php"><code>"http://yourdomain.com/".C('system_enter_name')."?m=content&c=index&a=show&id=1"</code></pre>
+				<pre data-type="html"><code>&lt;a href="http://yourdomain.com/&lt;?=C('system_enter_name')?&gt;?m=content&c=index&a=show&id=1"&gt;&lt;/a&gt;</code></pre>
+
+				<h2>应用模块</h2>
+				<p>框架中的应用模块，位于<kbd>application</kbd>目录中每一个目录称之为一个应用或模块。即URL访问中的<kbd>m</kbd>的值</p>
+				<div class="notice info">
+					<h4>http://www.yourname.com/index.php?m=content&c=...&a=...&id=1</h4>
+					<p>表示您访问的就是<kbd>application/content</kbd>这个应用模块目录下的控制器类。</p>
+					<p><kbd>content,文件夹名必须为小写字母</kbd></p>
+				</div>
+
+				<h2>控制器</h2>
+				<p>控制器就是应用模块的类文件,位于<kbd>application/应用模块/</kbd>的目录下面.</p>
+				<p>一个控制器就是一个类文件,能够和URL关联在一起的方式来命名的:<kbd>IndexAction.class.php</kbd></p>
+				<div class="notice info">
+					<p>假设如下URL</p>
+					<h4>http://www.yourname.com/index.php?m=content&c=index</h4>
+					<p>将尝试寻找并装载application/content目录下的IndexAction.class.php的控制器类class IndexAction</p>
+				</div>
+				<h3>创建一个简单的控制器</h3>
+				<hr>
+				<p>在<kbd>application/content</kbd>目录下创建一个名为<kbd>IndexAction.class.php</kbd>的文件,输入以下代码</p>
+				<pre data-type="php"><code>&lt;?php <br />
+class IndexAction {<br />
+	public function index(){<br />
+            echo 'hello world!';<br />
+	}<br />
+}<br />
+?&gt;</code></pre>
+				<p>现在使用类似这样的URL访问你的站点：<kbd>http://yourdomain.com/index.php?m=content&c=index</kbd></p>
+				<p>如果你做的没错,你应该看到hello world!</p>
+				<div class="notice warning">
+					<p>注意:类名必须以大写字母开头+Action,正确的写法是:</p>
+					<h4>class IndexAction { ... }</h4>
+				</div>
+				<h3>方法</h3>
+				<hr>
+				<p>上面的例子中用到的方法名是index().如果URL中<kbd>a</kbd>的值为空的话,会默认载入 "index"方法.</p>
+				<p>也可以将地址写成这样来访问:<kbd>http://yourdomain.com/index.php?m=content&c=index&a=index</kbd></p>
+				<p>URL中的<kbd>a</kbd>值是用来决定调用控制器中哪个方法的,加入一个新方法:</p>
+				<pre data-type="php"><code>&lt;?php <br />
+class IndexAction {<br />
+	public function index(){<br />
+            echo 'hello world!';<br />
+	}<br />
+	public function show(){<br />
+            echo 'my show!';<br />
+	}<br />
+}<br />
+?&gt;</code></pre>
+				<p>现在需要使用这样的URL访问新的方法：<kbd>http://yourdomain.com/index.php?m=content&c=index&a=show</kbd></p>
+				<p>你应该看到新的信息:my show!</p>
+				<h3>参数传递</h3>
+				<hr>
+				<p>URI中,任何参数都可传递到控制器中的方法使用,以$_GET['param']读取</p>
+				<p>如果你的URI是这样的:<kbd>http://yourdomain.com/index.php?m=content&c=index&id=1&name=gg</kbd></p>
+				<p>URI中的参数都会传递到index()方法中</p>
+				<pre data-type="php"><code>&lt;?php <br />
+class IndexAction {<br />
+	public function index(){<br />
+            echo $_GET['m'].','.$_GET['c'].','.$_GET['id'].','.$_GET['name'];<br />
+	}<br />
+}<br />
+?&gt;</code></pre>
+			<p>你应该看到信息:content,index,1,gg</p>
+			<h2>视图</h2>
+			<p>视图从不直接调用,必须被一个控制器来调用</p>
+			<p>下面使用你在控制器页面已经创建过的示例控制器,来添加新视图</p>
+			<h3>创建视图</h3>
+			<hr>
+			<div class="notice warning">
+				<h4>注意:视图文件必须创建在<kbd>template/</kbd>目录下</h4>
+			</div>
+			<p>在<kbd>template/</kbd>目录下创建一个名为index.php的文件:</p>
+			<pre data-type="php"><code>&lt;html&gt;<br />
+&lt;head&gt;<br />
+&lt;title&gt;My Index&lt;/title&gt;<br />
+&lt;/head&gt;<br />
+&lt;body&gt;<br />
+ &lt;h1&gt;Welcome to my Index!&lt;/h1&gt;<br />
+&lt;/body&gt;<br />
+&lt;/html&gt;<br /></code></pre>
+			<h3>载入视图</h3>
+			<hr>
+			<p>此时修改控制器代码:</p>
+			<div class="notice warning">
+				<h4>注意:希望在控制器中载入并使用视图,必须继承<kbd>Action.class.php Action控制器基类抽象类</kbd></h4>
+			</div>
+			<pre data-type="php"><code>&lt;?php <br />
+class IndexAction extends Action {<br />
+	public function index(){<br />
+            $this->display('');<br />
+            //$this->display('content/index');<br />
+	}<br />
+}<br />
+?&gt;</code></pre>
+			<div class="notice info">
+				<h4>假如URL是这样的:<kbd>http://yourdomain.com/index.php?m=content&c=index</kbd></h4>
+				<h4>用<kbd>$this->display('')</kbd>载入并使用视图文件,参数为空时,默认视图为<kbd>template/content/index/index.php</kbd></h4>
+				<h4>用<kbd>$this->display('content/index')</kbd>载入并使用视图文件,根据参数,默认视图为<kbd>template/content/index.php</kbd></h4>	
+				<h4>.php 文件的扩展名(后缀名)没有必要专门写出</h4>
+			</div>
+			<h3>给视图添加动态数据</h3>
+			<hr>
+			<p>此时修改控制器代码:</p>
+			<pre data-type="php"><code>&lt;?php <br />
+class IndexAction extends Action {<br />
+	public function index(){<br />
+			$id = 'My ID';<br />
+			$data = array('title' => 'My Title','message' => 'My Message','name' => 'My Name',);<br />
+            $this->assign(get_defined_vars());<br />
+            //$this->display('content/index');<br />
+	}<br />
+}<br />
+?&gt;</code></pre>
+			<div class="notice info">
+				<h4>需要使用<kbd>$this->assign(get_defined_vars());</kbd>获取方法中的所有变量传递到视图中</h4>
+			</div>
+			<p>现在,打开你的视图文件,将其中的文本替换成与数组对应的变量：</p>
+			<pre data-type="php"><code>&lt;html&gt;<br />
+&lt;head&gt;<br />
+&lt;title&gt;&lt;?=$data['title']?&gt;&lt;/title&gt;<br />
+&lt;/head&gt;<br />
+&lt;body&gt;<br />
+ &lt;h1&gt;&lt;?=$data['name']?&gt;&lt;/h1&gt;<br />
+ &lt;h2&gt;&lt;?=$data['message']?&gt;&lt;/h2&gt;<br />
+ &lt;h3&gt;&lt;?=$id?&gt;&lt;/h3&gt;<br />
+&lt;/body&gt;<br />
+&lt;/html&gt;<br /></code></pre>
+			<p>然后使用你先前用过的URL载入页面,你将看到变量已经被替换</p>
+			<h3>创建循环</h3>
+			<hr>
+			<p>让数据传入视图,不仅仅局限于简单的变量.你可以传递多维数组.例如:你从数据库里面取出数据就是典型的多维数据</p>
+			<p>同样是刚才的控制器,修改视图文件:</p>
+			<pre data-type="php"><code>&lt;html&gt;<br />
+&lt;head&gt;<br />
+&lt;title&gt;title&lt;/title&gt;<br />
+&lt;/head&gt;<br />
+&lt;body&gt;<br />
+&lt;h3&gt;My Data&lt;/h3&gt; <br />
+&lt;ul&gt;<br />
+&lt;?php foreach ($data as $item):?&gt;<br />
+&lt;li&gt;&lt;?php echo $item;?&gt;&lt;/li&gt;<br />
+&lt;?php endforeach;?&gt;<br />
+&lt;/ul&gt;<br />
+&lt;/body&gt;<br />
+&lt;/html&gt;</code></pre>
+			<p>注意:上面的例子中我们使用PHP替代语法,如果你对这种语法不熟悉,可以在<a href="http://cn2.php.net/manual/zh/control-structures.alternative-syntax.php" target="_blank">这里</a>阅读</p>
+			<h2>模型</h2>
+			<p>模型是专门用来和数据库打交道的PHP类.你可以写一个模型类,里面包含插入,更新,删除数据或集多个数据操作的方法.</p>
+			<p>下面的例子将向你展示一个普通的模型类:</p>
+			<pre data-type="php"><code>class ContentModel extends Model {<br />
+     public function __construct(){<br />
+        parent::__construct();<br />
+     }<br />
+     public function content_list($userid){<br />
+        $this-&gt;setModelTable('content');	                //设置表名<br />
+	$c = $this-&gt;where("userid = {$userid}")-&gt;select();	//数据库连贯操作<br />
+	return $c;<br />
+     }<br />
+}</code></pre>
+			<div class="notice warning">
+				<h4>注意:模型文件的命名规范为<kbd>Name+'Model.class.php'</kbd>,如上面列子,模型类的名字:ContentModel,其文件名:ContentModel.class.php</h4>
+				<h4>备注:上面用到函数的连贯操作是<kbd><a href="">core/library/class/system/Model.class.php</a></kbd>基本模型类.</h4>
+			</div>
+			<h3>剖析模型</h3>
+			<hr>
+			<p>模型类文件存放在<kbd>model/</kbd>文件夹.最基本的模型类必须像这样:</p>
+			<pre data-type="php"><code>class ContentModel extends Model {<br />
+     public function __construct(){<br />
+        parent::__construct();<br />
+     }<br />
+}</code></pre>
+			<p>除了满足上述的命名规范,需要确保你的类继承了基本模型类<kbd>Model.class.php</kbd></p>
+			<p>支持数据库切换,修改模型类代码如下:</p>
+			<pre data-type="php"><code>class ContentModel extends Model {<br />
+     public function __construct(){<br />
+        parent::__construct(C('database_test'));<br />
+     }<br />
+}</code></pre>
+			<div class="notice info">
+				<h4>如上代码,读取数据库配置文件<kbd>config/database.php</kbd>中键名为<kbd>test</kbd>的数据库配置,类中方法可对该数据库实现操作</h4>
+				<h4>默认是键名为<kbd>default</kbd>的数据库配置</h4>
+			</div>
+			<h3>载入模型</h3>
+			<p>模型可以在控制器中载入并使用.就像这样:</p>
+			<pre data-type="php"><code>$foo = M('Content')-&gt;content_list($userid);</code></pre>
+			<p>这里是通过一个全局辅助函文件<kbd><a href="">core/library/function/global.func.php</a></kbd>中的<kbd><a href="#m">M()</a></kbd>函数实现.</p>
+			<div class="notice warning">
+				<h4>这里提到当模型类'Content'类不存在时,会自动锁定数据库中的'content'表 (模型类优先)</h4>
+				<h4>所以建议,载入模型类,类型首字母大写,以作区分</h4>
+				<h4>所以,模型类名不应该与数据库中某数据表的名字相同</h4>
+			</div>
+			<p>如上所述,载入模型是通过<kbd><a href="#m">M()</a></kbd>函数实现的,当不使用自定义模型时,会自定载入基础模型类<kbd><a href="">Model.class.php</a></kbd></p>
+			<pre data-type="php"><code>M('member')-&gt;where("userid = {$userid}")-&gt;select();<br />
+M('member','test')-&gt;where("userid = {$userid}")-&gt;select();<br />
+M()-&gt;query($sql);</code></pre>
+			<p>1.查询member表的数据</p>
+			<p>2.查询"test"数据库配置中的member表的数据</p>
+			<p>3.自定义SQl语句</p>
+			<p>上面用到函数的连贯操作是<kbd><a href="">core/library/class/system/Model.class.php</a></kbd>基本模型类.</p>
+			<h2>保留字</h2>
+			<p>为了便于编程,使用了一系列的函数和名称来完成操作.所以,有些名称不希望被再定义,但允许直接调用.下面是不能被使用的保留字列表.</p>
+			<h3>常量</h3>
+			<hr>
+			<pre data-type="php"><code>CORE_PATH 核心物理路径<br />
+LIB_PATH  系统核心类库目录<br />
+CLASS_PATH  系统核心类库目录<br />
+CLASS_EXTENSION_PATH  系统扩展类库目录<br />
+FUNC_PATH  系统核心函数库目录<br />
+DRIVER_PATH  系统驱动类库目录<br />
+SITE_PATH  网站物理路径<br />
+APP_PATH  应用目录<br />
+MODEL_PATH  模型目录<br />
+CONF_PATH  配置目录<br />
+LANG_PATH  语言包目录<br />
+UPLOAND_PATH  上传目录<br />
+TPL_PATH  板目录<br />
+CACHE_PATH  缓存目录<br />
+TPL_CACHE_PATH  已编译模板<br />
+SITE_PROTOCOL  主机协议<br />
+SITE_URL  网站虚拟路径<br />
+UPLOAND_URL  上传目录虚拟路径<br />
+PUBLIC_URL  静态公共目录虚拟路径<br />
+SCRIPT_URL  静态JS目录虚拟路径<br />
+IMG_URL  静态图片目录虚拟路径<br />
+SKIN_URL  静态样式目录虚拟路径<br />
+HTTP_REFERER  区域时间设置<br />
+SYS_TIME  调整时间<br />
+CHARSET  程序编码<br />
+SYS_CHMOD  生成文件权限<br /></code></pre>
+			</article>
+
+			<article id="class">
+				<h1>类库参考</h1>
+
+				<h2>数据库类</h2>
+				<h3>数据库配置</h3>
+				<hr>
+				<p>连接数据库之前需要一个配置文件存放数据库连接值(username,password,database name等)</p>
+				<p>该文件位于<kbd>config/database.php</kbd>你可以在该文件中配置多个连接环境以作切换</p>
+				<p>配件文件存放在一个如下格式的一个多维数组里:</p>
+				<pre data-type="php"><code>return array(
+	'test' =&gt; array(
+		'type' =&gt; 'mysql',
+		'dbhost' =&gt; '127.0.0.1',
+		'dbuser' =&gt; 'root',
+		'dbpw' =&gt; '123123',
+		'dbname' =&gt; 'test',
+		'dbpre' =&gt; 'one_',
+		'charset' =&gt; 'utf8',
+		'pconnect' =&gt; 0,
+		'dblp' =&gt; 1,
+	),
+	'default' =&gt; array(
+		'type' =&gt; 'mysql',
+		'dbhost' =&gt; '192.168.1.144',
+		'dbuser' =&gt; 'root',
+		'dbpw' =&gt; 'qweqwe',
+		'dbname' =&gt; 'one',
+		'dbpre' =&gt; 'one_',
+		'charset' =&gt; 'utf8',
+		'pconnect' =&gt; 0,
+		'dblp' =&gt; 1,
+	),
+);</code></pre>
+		<div class="notice warning">
+			<h4>注意:数组中,必须有个键名为'default',用作默认数据库配置.目前类型暂只支持Mysql数据库</h4>
+		</div>
+		<h3>部分使用方法</h3>
+		<hr>
+		<p>数据库操作方法在<kbd>/core/library/class/system/Model.class.php</kbd>中实现</p>
+		<div class="notice info">
+			<h4>在控制器中使用时,需要<kbd>M()</kbd>辅助使用.</h4>
+		</div>
+		<p>指针方法</p>
+		<pre data-type="php"><code>M($table)-&gt;<br />
+where(条件)<br />
+field(字段)<br />
+order(排序)<br />
+limit(一页几条)<br />
+page(第几页)<br />
+having(having条件查询)<br />
+group(分组)<br />
+lock(锁表)没做待定<br />
+distinct(字段)一般筛选不同的字段<br />
+join(联表查询)<br />
+$total=M('Archives')-&gt;<br />
+join("a INNER JOIN ".M()-&gt;getTable('archives_cat')." b on a.catid = b.catid and b.lang = '{$_SESSION['lang']}'")-&gt;<br />
+where("a.catid in ($childids) and a.status=$status")-&gt;<br />
+cache(缓存时间)SQL缓存</code></pre>
+		<p>最后操作方法,接上连贯操作</p>
+		<pre data-type="php"><code>-&gt;<br />
+select()查询<br />
+getone()单条查询<br />
+getvalue(某字段号)单条某字段<br />
+add(数组)数组格式:字段名=&gt;值<br />
+query(SQL语句)<br />
+edit(数组)数组格式:字段名=&gt;值<br />
+delete(填就是主键ID)删除<br />
+setField(字段名,修改值)修改个别数据<br />
+setInc(字段名,加多少=1) 统计数据+1<br />
+setDec(字段名,减多少=1)统计数据-1</code></pre>
+		<p>统计查询</p>
+		<pre data-type="php"><code>-&gt;<br />
+count(字段)统计条数<br />
+sum(字段)统计和<br />
+min(字段)最小值<br />
+max(字段)最大值<br />
+avg(字段)平均值</code></pre>
+		<p>其它常用</p>
+		<pre data-type="php"><code>-&gt;<br />
+affectedRows()获取上次SQL影响条数<br />
+insertId()获取上次插入值<br />
+lastSql()最后运行SQL的语句<br />
+queryNum()一共查询条数<br />
+queryClear()清除指针的影响</code></pre>
+		<div class="notice info">
+			<h4>在模型中使用时,不需要<kbd>M()</kbd>辅助.其他连贯操作与上面的一致.使用方法如下:</h4>
+		</div>
+		<pre data-type="php"><code>		$this-&gt;setModelTable('test');			//设置表名<br />
+		$cc = $this-&gt;where('id = 1')-&gt;select();	//数据库连贯操作<br />
+		return $cc;</code></pre>
+			</article>
+
+			<article id="class">
+				<h1>全局辅助函数参考</h1>
+			</article>
+		</div>
+	</div>
+	</body>
+	<script>
+	$(document).ready(function(){
+	
+		var $nav = $("nav dl");
+		
+		$("article").each(function(){
+			var $el = $(this);
+			var $h1 = $el.find("h1");
+			var sectionTitle = $h1.html();
+			var articleId = $el.attr("id");
+			var $dt = $("<dt><a href=\"#"+articleId +"\">"+sectionTitle+"</a></dt>");
+			
+			$dt.find("a").on("click",function(e){
+				e.preventDefault();
+				$('html,body').animate({scrollTop: $h1.offset().top},400);
+			});
+			
+			$nav.append($dt);
+			
+			var $subtitles = $el.find("h2");
+			
+			$subtitles.each(function(){
+				var $h2 = $(this);
+				var title = $h2.text();
+				var newID = articleId + "-" +camelCase(title);
+				$h2.attr("id",newID);
+				var $dd = $("<dd><a href=\"#" +newID + "\">" + title + "</a></dd>");
+				
+				$dd.find("a").on("click",function(e){
+					e.preventDefault();
+					$('html,body').animate({scrollTop: $h2.offset().top},400);
+				})
+				$nav.append($dd);
+				
+			});
+			
+			var $articles = $el.find("article");
+			
+		});	
+		prettyPrint();			
+		
+		function camelCase(str){			
+			var splitString = str.split(" ");
+			
+			var returnedCamel = splitString[0].toLowerCase();
+			
+			for (var i=1; i<splitString.length; i++){
+				returnedCamel += splitString[i].charAt(0).toUpperCase() + splitString[i].substring(1).toLowerCase();
+			}
+			
+			return returnedCamel;
+			
+		} 
+	});
+	</script>
+</html>
