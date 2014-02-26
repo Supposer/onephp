@@ -389,6 +389,95 @@ queryClear()清除指针的影响</code></pre>
 			<article id="class">
 				<h1>全局辅助函数参考</h1>
 				<p>提供部分全局辅助函数,可在任意函数内调用.<kbd>core/library/function/global.func.php</kbd></p>
+				<div class="notice info">
+					<h4>暂只列出部分函数.</h4>
+					<h4>可按各自需要向global.func.php新增函数,可直接调用</h4>
+				</div>
+				<h2>M函数(获取模型|数据表)</h2>
+				<pre data-type="php"><code>/**<br />
+	 * <br />
+	 * 获取模型<br />
+	 * 用数组形式标记对象是否应经被事例化(是否已是对象)<br />
+	 * @param $modelname 模型名字|数据库表名<br />
+	 * @param $active_group 让你选择哪个连接组,默认'default'<br />
+	 */<br />
+	function M($model_name = '',$active_group = 'default') {<br />
+    				...<br />
+	}</code></pre>
+			<p>1.该函数用作自动载入并实例化模型类.M('Content')->类中函数...</p>
+			<p>2.当不存在该模型类时,将会自动实例化Model模型类,变量$modelname将会成为将要查询数据库的表名,此时变量$active_group会被激活,让你选择哪个连接组(数据库配置).M('news')->where()->...</p>
+			<div class="notice danger">
+				<h4>M函数优先判断是否存在模型类,所以当模型类类名与表名相同会产生冲突,可能没有得到你想要的.</h4>
+			</div>
+			<h2>C函数(读取配置信息)</h2>
+			<pre data-type="php"><code>    /**<br />
+     * <br />
+     *  读取配置文件<br />
+     * @param $filename 配置文件名<br />
+     * @param $key 配置键名<br />
+     * @param $reload 强制reload<br />
+     */<br />
+    function C($key, $reload = false) {<br />
+     ...<br />
+    }</code></pre>
+    		<p>配置文件位置<kbd>config/</kbd>目录下</p>
+    		<p>格式如下,配置文件search.php</p>
+    		<pre data-type="php"><code>return array(<br />
+	'mode' =&gt; '',<br />
+	'array' =&gt; TRUE,<br />
+	'ttl' =&gt; 3,<br />
+	'server' =&gt; '192.168.1.99',<br />
+	'port' =&gt; 9312<br />
+);</code></pre>
+			<div class="notice info">
+				<h4>1.$config = C('search'),以数组形式返回</h4>
+				<h4>2.$port = C('search_port'),直接获取值</h4>
+			</div>
+			<h2>L函数(语言包翻译信息)</h2>
+			<pre data-type="php"><code>/**<br />
+	 * 读取语言包翻译<br />
+	 * Enter description here ...<br />
+	 * @param unknown_type $key			类型及语言项,error_operationFail<br />
+	 * @param unknown_type $language	语言,zh-cn,en-us<br />
+	 * @param unknown_type $reload		强制reload<br />
+	 */<br />
+    function L($key, $language = 'zh-cn', $reload = false) {<br />
+     ...<br />
+    }</code></pre>
+        	<p>配置文件位置<kbd>language/</kbd>目录下</p>
+    		<p>命名规范<kbd>name_language.php</kbd></p>
+    		<p>类似配置文件,格式如下,配置文件error_zh-cn.php</p>
+    		<pre data-type="php"><code>return array(<br />
+	'operationFail'       =&gt; '操作失败！',<br />
+	'operationSuccess'    =&gt; '操作成功！',<br />
+);</code></pre>
+			<div class="notice info">
+				<h4>1.$language = L('error'),以数组形式返回</h4>
+				<h4>2.$operationFail = L('error_operationFail'),直接获取值</h4>
+			</div>
+			<h2>showeditor(编辑器)</h2>
+
+			<h2>showmessage(提示信息)</h2>
+
+			<h2>listpages(分页)</h2>
+
+			<h2>escapeStr($string) 字符转换</h2>
+
+			<h2>file_exists_case($filename) 针对windows区分大小写的文件存在判断</h2>
+
+			<h2>filter_gpcf() GPCF全局变量转义过滤</h2>
+
+			<h2>get_client_ip($xforwardip) 获取客户端IP</h2>
+
+			<h2>Get_Cookie($cookieName,$needPrefix) 从请求中获取cookie值</h2>
+
+			<h2>Set_Cookie($cookieName,$cookieValue,$expireTime=0,$needPrefix=true) 设置cookie</h2>
+
+			<h2>get_instance_of($name,$method,$args) 取得对象实例</h2>
+
+			<h2>header_301($url) 301跳转</h2>
+
+			<h2>load_driver($drivername) 载入所需驱动文件</h2>
 			</article>
 		</div>
 	</div>
