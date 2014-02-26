@@ -78,14 +78,14 @@ class View{
 	 * 获取输出页面内容
 	 * @param $templateFile 模板文件
 	 */
-	public function fetch($templateFile='',$diy) {
-		$diy = $diy?1:0;
+	public function fetch($templateFile=''){
 		ob_start();
-		extract($this->tVar, EXTR_SKIP);
-		$this->tVar=array();
-		include Template::adminTemp($templateFile,$app);
+		//extract($this->tVar, EXTR_SKIP);
+		//$this->tVar=array();
+       // include template($templateFile);
+		@readfile($templateFile);
         $contents = ob_get_contents();
-        ob_clean();
+        ob_end_clean();
         return $contents;
 	}
 }
