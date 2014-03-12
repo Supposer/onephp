@@ -40,7 +40,7 @@ class Template{
 	 * @return string
 	 */
 	static public function templateCompile($from, $to) {
-		$content = C('system_template_refresh') ? Template::templateParse(File::fileGet($from)) : "<?php defined('IN_ONE') or exit('Access Denied');?>".File::fileGet($from);
+		$content = C('system_template_parse') ? Template::templateParse(File::fileGet($from)) : "<?php defined('IN_ONE') or exit('Access Denied');?>".File::fileGet($from);
 		File::filePut($to, $content);
 	}
 	
