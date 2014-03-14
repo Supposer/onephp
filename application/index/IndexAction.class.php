@@ -24,5 +24,7 @@ class IndexAction extends Action{
 		
 		$this->assign(get_defined_vars());
 		$this->display('index/index');
+
+
 	}
 }

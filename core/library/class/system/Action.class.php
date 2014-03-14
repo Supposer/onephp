@@ -47,10 +47,9 @@ abstract class Action{
 	 * 获取输出页面内容
 	 * @param $templateFile 模板文件
 	 */
-	final protected function fetch($templateFile='',$diy) {
-		$diy = $diy?1:0;
+	final protected function fetch($templateFile='') {
 		$templateFile = $templateFile?$templateFile:strtolower(APP_NAME.'/'.APP_CLASS.'/').APP_METHOD;
-		return $this->view->fetch($templateFile,$diy);
+		return $this->view->fetch($templateFile);
 	}
 	
 	/**
