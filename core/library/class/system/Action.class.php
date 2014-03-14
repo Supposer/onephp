@@ -60,7 +60,7 @@ abstract class Action{
 	 */
     final protected function buildHtml($htmlfile='',$templateFile='') {
 		$htmlcontent = $this->fetch($templateFile);
-		return File::filePut(WED_PATH.$htmlfile, $htmlcontent,0);
+		return File::filePut(SITE_PATH.$htmlfile, $htmlcontent,0);
     }
 	
 	/**
