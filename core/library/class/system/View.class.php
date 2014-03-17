@@ -80,10 +80,10 @@ class View{
 	 */
 	public function fetch($templateFile=''){
 		ob_start();
-		//extract($this->tVar, EXTR_SKIP);
-		//$this->tVar=array();
-       // include template($templateFile);
-		@readfile($templateFile);
+		extract($this->tVar, EXTR_SKIP);
+		$this->tVar=array();
+       	include Template::temp($templateFile);
+		//@readfile($templateFile);
         $contents = ob_get_contents();
         ob_end_clean();
         return $contents;

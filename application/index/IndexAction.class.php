@@ -22,6 +22,7 @@ class IndexAction extends Action{
 		
 		$editor = showeditor('content','content');
 		
+
 		$this->assign(get_defined_vars());
 		$this->display('index/index');
 
