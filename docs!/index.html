@@ -384,6 +384,63 @@ queryClear()清除指针的影响</code></pre>
 		<pre data-type="php"><code>		$this-&gt;setModelTable('test');			//设置表名<br />
 		$cc = $this-&gt;where('id = 1')-&gt;select();	//数据库连贯操作<br />
 		return $cc;</code></pre>
+
+				<h2>缓存类</h2>
+				<h3>用法举例</h3>
+				<hr>
+				<p>下面这个例子:数据库类的一部分,缓存sql搜索结果.</p>
+				<pre data-type="php"><code>
+$this-&gt;dc = get_dc();<br />
+$cache_ttl = intval($options['cache']);<br />
+$md5_sql = md5($sql);<br />
+if($result = $this-&gt;dc-&gt;get($md5_sql)){<br />
+   return $result;<br />
+}else{<br />
+   $result = $this-&gt;query($sql);<br />
+   $this-&gt;dc-&gt;set($md5_sql,$result,$cache_ttl);<br />
+}</code></pre>
+				<p>首先加载缓存适配器,<kbd>get_dc(),[参考全局辅助函数global.func.php]</kbd></p>
+				<p>在配置文件<kbd>config/datacache.php</kbd>,修改缓存配置</p>
+				<pre data-type="php"><code>
+return array(<br />
+	'mode' =&gt; 'memcache',//缓存模式,默认为file形式<br />
+	'pre' =&gt;'pre',//缓存前缀<br />
+	'ttl' =&gt; '900',//缓存时间(秒),默认为0<br />
+	'server' =&gt; '192.168.1.144',//服务器,默认为127.0.0.1<br />
+	'port' =&gt; '11211'//端口,默认为11211<br />
+);</code></pre>
+				<h3><span style="font-weight: bolder;color: #728C00;">get($key){}</span></h3>
+				<div class="notice info">
+					<h4>此函数将尝试从缓存系统中获取指定的缓存项.如果缓存不存在,或者超过缓存期限,则返回空.</h4>
+				</div>
+				<h3><span style="font-weight: bolder;color: #728C00;">set($key, $value, $ttl = 0)</span></h3>
+				<div class="notice info">
+					<h4>此函数尝试将一个缓存项存储到对应的缓存系统中.如果存储失败,则返回FALSE.</h4>
+					<h4>第三个参数(可选项)指定了缓存的存活时间,默认为0.</h4>
+					<h4>$key建议控制在250个字符.</h4>
+				</div>
+				<h3><span style="font-weight: bolder;color: #728C00;">add($key, $value, $ttl = 0)</span></h3>
+				<div class="notice info">
+					<h4>add方法的作用和set方法类似,区别是如果add方法的返回值为false,表示这个key已经存在,而set方法则会直接覆写.</h4>
+					<h4>暂只有Memcached与Apc模式支持add方法</h4>
+				</div>
+				<h3><span style="font-weight: bolder;color: #728C00;">increment($key, $value)</span></h3>
+				<div class="notice info">
+					<h4>将一个数值元素增加参数$value指定的大小.如果元素的值不是数值类型,将其作为0处理</h4>
+					<h4>暂只有Memcached与Apc模式支持increment方法</h4>
+				</div>
+				<h3><span style="font-weight: bolder;color: #728C00;">rm($key)</span></h3>
+				<div class="notice info">
+					<h4>从服务端删除$key对应的元素</h4>
+				</div>
+				<h3><span style="font-weight: bolder;color: #728C00;">clear()</span></h3>
+				<div class="notice info">
+					<h4>作废缓存中的所有元素</h4>
+				</div>
+				<h3><span style="font-weight: bolder;color: #728C00;">is_support()</span></h3>
+				<div class="notice info">
+					<h4>检测该模式是否可用</h4>
+				</div>																	
 			</article>
 
 			<article id="class">
