@@ -21,6 +21,19 @@ class DcApc extends Dc{
 		}
 	}
 
+	function add($key, $value, $ttl = 0) {
+		$ttl = intval($ttl)>0 ? intval($ttl) : $this->_dcconf['ttl'];
+		if($ttl>0){	
+			return apc_add($this->_dcconf['pre'].$key, $value, $ttl);
+		}else{
+			return;
+		}
+	}
+
+	function increment($key, $value) {
+		return apc_inc($this->_dcconf['pre'].$key, (int) $value);
+	}
+
 	function rm($key) {
 		return apc_delete($this->_dcconf['pre'].$key);
 	}
