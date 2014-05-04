@@ -779,7 +779,7 @@ class Model {
      * @param string $method 方法名称
      * @param array $args 调用参数
      */
-    protected function __call($method, $args) {
+    public function __call($method, $args) {
         if (in_array(strtolower($method), array(
             'table',
             'where',

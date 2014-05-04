@@ -302,7 +302,8 @@ defined('IN_ONE') or exit('Access Denied');
      */
     function parse_name($name, $type = 0) {
         if ($type) {
-            return ucfirst(preg_replace("/_([a-zA-Z])/e", "strtoupper('\\1')", $name));
+            //return ucfirst(preg_replace("/_([a-zA-Z])/e", "strtoupper('\\1')", $name));
+            return ucfirst(preg_replace_callback("/_([a-zA-Z])/",  function($matches) {return strtoupper($matches[1]);}, $name));
         } else {
             return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
         }
@@ -555,8 +556,7 @@ defined('IN_ONE') or exit('Access Denied');
      * @param $url_forward 跳转网址
      * @param $ttl 跳转时间
      */
-    function showmessage($message, $url_forward = 'goback', $ttl = 1.5, $template = 'showmessage') {
-        $url_forward = empty($url_forward) ? 'goback' : $url_forward;
+    function showmessage($message, $url_forward = '', $ttl = 1.5, $template = 'showmessage') {
         $ttl = intval($ttl) > 0 ? $ttl : 0;
         if(is_array($message)){
             foreach ($message as $k => $v) {
@@ -633,7 +633,7 @@ defined('IN_ONE') or exit('Access Denied');
     		}
     	}
 
-        if ($page+1 < $total) {
+        if ($page+1 <= $total) {
             $pages.= '<a href="'.str_replace('{page}',$page+1,$url).'" title="下一页">下一页</a><span>共'.$totalcount.'条 <input type="text" id="pageno" value="'.$page.'" onkeydown="if(event.keyCode==13 &amp;&amp; this.value) {window.location.href=\''.$url.'\'.replace(/\{page\}/, this.value);return false;}">/'.$total.'页 <input type="button" class="pages_btn" value="GO" onclick="if(document.getElementById(\'pageno\').value>0)window.location.href=\''.$url.'\'.replace(/\{page\}/, document.getElementById(\'pageno\').value);"></span></div>';
         }
     	
