@@ -15,11 +15,7 @@ class UploadAction{
 	
 	public function __construct(){
 		$this->upload = get_instance_of('FilesUpload');		
-		$this->ext_arr = array(
-			'gif', 'jpg', 'jpeg', 'png', 'bmp',#img
-			'swf', 'flv', 'mp3', 'wav', 'wma', 'wmv', 'mid', 'avi', 'mpg', 'asf', 'rm', 'rmvb',#media
-			'doc', 'docx', 'xls', 'xlsx', 'ppt', 'txt', 'zip', 'rar', 'gz', 'bz2',#file
-		);
+		$this->ext_arr = C('upload_ext');	
 	}
 	
 
@@ -98,9 +94,9 @@ class UploadAction{
 				
 				if ($attach['isimage']){
 					$dftp->dftp_put($attach['attachment_path'].'.thumb.jpg',$attach['attachment'].'.thumb.jpg');
-					$dftp->dftp_put($attach['attachment_path'].'.middle.jpg',$attach['attachment'].'.middle.jpg');	
+					//$dftp->dftp_put($attach['attachment_path'].'.middle.jpg',$attach['attachment'].'.middle.jpg');	
 					File::fileDel($attach['attachment_path'].'.thumb.jpg');     //删除中转服务器文件
-					File::fileDel($attach['attachment_path'].'.middle.jpg');     //删除中转服务器文件
+					//File::fileDel($attach['attachment_path'].'.middle.jpg');     //删除中转服务器文件
 				}
 				
 				return $ftp_settings[$key]['host'].$attach['attachment'];

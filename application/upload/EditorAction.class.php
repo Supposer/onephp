@@ -9,11 +9,7 @@ class EditorAction{
 
 	public function __construct(){
 		$this->upload = get_instance_of('FilesUpload');		
-		$this->ext_arr = array(
-			'gif', 'jpg', 'jpeg', 'png', 'bmp',#img
-			'swf', 'flv', 'mp3', 'wav', 'wma', 'wmv', 'mid', 'avi', 'mpg', 'asf', 'rm', 'rmvb',#media
-			'doc', 'docx', 'xls', 'xlsx', 'ppt', 'txt', 'zip', 'rar', 'gz', 'bz2',#file
-		);
+		$this->ext_arr = C('upload_ext');
 	}
 
 	public function upload_handle(){
