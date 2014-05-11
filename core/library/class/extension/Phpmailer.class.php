@@ -276,11 +276,11 @@ class Phpmailer {
   /////////////////////////////////////////////////
 
   private   $smtp           = NULL;
-  private   $to             = array();
+  public   $to             = array();
   private   $cc             = array();
   private   $bcc            = array();
   private   $ReplyTo        = array();
-  private   $all_recipients = array();
+  public   $all_recipients = array();
   private   $attachment     = array();
   private   $CustomHeader   = array();
   private   $message_type   = '';
