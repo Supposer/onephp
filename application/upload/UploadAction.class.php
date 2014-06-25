@@ -53,8 +53,8 @@ class UploadAction{
 		if ($attach['isimage']){
 			$thumb = get_instance_of('Images');
 			
-			$thumb->param($attach['attachment_path'])->thumb($attach['attachment_path'].'.thumb.jpg',200,200,0);      // 等比缩放
-			//$thumb->param($attach['attachment'])->thumb($attach['attachment_path'].'.middle.jpg',450,450,0);      // 等比缩放
+			$thumb->param($attach['attachment_path'])->thumb($attach['attachment_path'].'.thumb.jpg',200,200,0,1);      // 等比缩放
+			//$thumb->param($attach['attachment'])->thumb($attach['attachment_path'].'.middle.jpg',450,450,0,1);      // 等比缩放
 			
 		}
 		
