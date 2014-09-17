@@ -68,7 +68,7 @@ defined('IN_ONE') or exit('Access Denied');
 
 	function dftp_put($local, $remote = '') {
 		$remote or $remote = $local;
-//		$local = UPLOAND_URL.'/'.$local;
+//		$local = UPLOAD_URL.'/'.$local;
 		$this->dftp_mkdir(dirname($remote));
 		
 		if (!($fp = @fopen($local, 'rb'))) {

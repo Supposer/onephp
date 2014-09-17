@@ -196,7 +196,7 @@ class File{
 		$dirpath = realpath($dir);
 		$dir = self::dirPath($dir);
 		if(!is_dir($dir)) return false;
-		$dirs = array(CORE_PATH, CONF_PATH, TPL_PATH, UPLOAND_PATH);//核心文件列表
+		$dirs = array(CORE_PATH, CONF_PATH, TPL_PATH, UPLOAD_PATH);//核心文件列表
 		if(in_array($dir, $dirs)) halt(array('header'=>'Cannot Remove System DIR','message'=>$dir));
 		if(substr($dir, 0, strlen(SITE_PATH)) != SITE_PATH) halt(array('header'=>'Not in the system DIR','message'=>$dir));//判断是否系统范围内
 		$list = glob($dir.'*');

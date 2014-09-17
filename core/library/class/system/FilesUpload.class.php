@@ -47,8 +47,8 @@ class FilesUpload{
 			$attach['attachdir'] = $this->getTargetDir($this->type);											//指定存放文件夹
 			$attach['attachment'] = $attach['attachdir'].$fileArr.'.'.$attach['extension'];						//相对路径
 			
-			$attach['attachment_url'] = UPLOAND_URL.$attach['attachdir'].$fileArr.'.'.$attach['extension'];		//虚拟路径
-			$attach['attachment_path'] = UPLOAND_PATH.$attach['attachdir'].$fileArr.'.'.$attach['extension'];	//物理路径
+			$attach['attachment_url'] = UPLOAD_URL.$attach['attachdir'].$fileArr.'.'.$attach['extension'];		//虚拟路径
+			$attach['attachment_path'] = UPLOAD_PATH.$attach['attachdir'].$fileArr.'.'.$attach['extension'];	//物理路径
 			
 			$this->attach = & $attach;
 			$this->error_code = 0;
@@ -228,7 +228,7 @@ class FilesUpload{
 	 * @return
 	 */
 	public function checkDirExists($subdir = '') {
-		$typedir = $subdir ? (UPLOAND_PATH.$subdir) : '';
+		$typedir = $subdir ? (UPLOAD_PATH.$subdir) : '';
 		if(!is_dir($typedir))File::dirCreate($typedir);
 		$res = is_dir($typedir);
 		return $res;

@@ -42,7 +42,7 @@ defined('CONF_PATH') || define('CONF_PATH',  SITE_PATH.'config/');
 // 语言包目录
 defined('LANG_PATH') || define('LANG_PATH',  SITE_PATH.'language/');
 // 上传目录
-defined('UPLOAND_PATH') || define('UPLOAND_PATH',SITE_PATH.'attachment/');
+defined('UPLOAD_PATH') || define('UPLOAD_PATH',SITE_PATH.'attachment/');
 // 模板目录
 defined('TPL_PATH') || define('TPL_PATH', SITE_PATH.'template/');
 // 缓存目录
@@ -76,7 +76,7 @@ define('SITE_PROTOCOL', isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'
 define('SITE_URL', (isset($_SERVER['HTTP_HOST'])? (SITE_PROTOCOL.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT']!='80' && $_SERVER['SERVER_PORT']!='443'?':'.$_SERVER['SERVER_PORT'].'/':'/')): '').C('system_web_dir'));
 
 //上传目录虚拟路径
-defined('UPLOAND_URL') || define('UPLOAND_URL',SITE_URL.'attachment/');
+defined('UPLOAD_URL') || define('UPLOAD_URL',SITE_URL.'attachment/');
 //静态公共目录虚拟路径
 defined('PUBLIC_URL') || define('PUBLIC_URL',SITE_URL.'public/');
 //静态JS目录虚拟路径
