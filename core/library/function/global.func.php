@@ -126,7 +126,7 @@ defined('IN_ONE') or exit('Access Denied');
      * 获取缓存类
      */
     function get_dc() {
-        return get_instance_of('Dc', 'factory', array(C('dc')));
+        return get_instance_of('Dc', 'factory', array(C('datacache')));
     }
 
     /**
